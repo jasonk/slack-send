@@ -1,0 +1,51 @@
+slack-send [options..] [attachers...]
+
+Delivery Options
+  --channel=<string>        Channel to send to
+  --broadcast               Send thread response to channel
+  --thread=<thread_ts>      Thread to reply to
+  --pin                     Pin message after posting it
+
+Sender Options
+  --username=<string>       Username to use as sender
+  --icon-emoji=<emoji>      Emoji id use as sender icon (i.e. :bowtie:)
+  --icon-url=<url>          URL to image to use as sender icon
+  --as-user                 Send message as user instead of bot
+
+Configuration Options
+  --link-names              Find and link channel names and usernames
+  --mrkdwn                  Enable slack markup parsing?
+  --parse=<parse_type>      Message parsing type
+  --unfurl-links            Automatically unfurl links
+  --unfurl-media            Automatically unfurl media
+  --fallback-template=<tpl> Template for automatically building fallback
+  --token                   Slack Authentication Token
+
+Message Options
+  --long-field=<field>      Add a field to the message
+  --short-field=<field>     Add a short field to the message
+  --color=<color>           Message color.
+  --color-map=<file>        Color map for mapping color names
+  --pretext=<text>          Text that appears above the message block
+  --fallback=<text>         Fallback message for clients without formatting
+  --author-name=<string>    Author name
+  --author-link=<url>       Author link URL
+  --author-icon=<url|email> Author icon URL (or Gravatar email)
+  --title=<string>          Message title
+  --title-link=<url>        Message title link
+  --text=<text>             Main message text
+  --image-url=<url>         Image URL (up to 400px wide or 500px high)
+  --thumb-url=<url>         Thumbnail URL (up to 75px wide or high)
+  --footer=<text>           Footer text (up to 300 characters)
+  --footer-icon=<url>       Footer icon URL
+  --ts                      Timestamp of event
+
+Attacher Options
+  --stdin                   Read attachments from stdin
+  --read-file=<file>        Read attachments from file
+  --run-command=<command>   Read attachments from command output
+
+Miscellaneous Options
+  --version                 Show slack-send version
+  --help                    Show help information
+  --completion              Show bash completion script

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+cd "$(dirname "$0")"
+
+debug-slack-send \
+  --channel "comic-book-alerts" \
+  --text "New comic book alert!" \
+  --username "ComicBookGuy" \
+  @comic-book-alert.yaml

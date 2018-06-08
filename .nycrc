@@ -1,0 +1,14 @@
+{
+  "require": [ "babel-register" ],
+  "reporter": [
+    "lcov",
+    "text-summary",
+    "json-summary",
+    "html"
+  ],
+  "cache": true,
+  "sourceMap": false,
+  "instrument": false,
+  "report-dir": "./test-results/",
+  "include": [ "**/src/**/*.js" ]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "slack-send",
+  "version": "1.0.0",
+  "description": "Send stuff to Slack from the command line",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "nyc mocha",
+    "docs": "esdoc",
+    "build": "babel --out-dir lib src --source-maps",
+    "watch": "babel --out-dir lib src --source-maps --watch",
+    "eslint": "eslint ."
+  },
+  "keywords": [],
+  "author": "Jason Kohles <email@jasonkohles.com>",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^3.11.0",
+    "lodash": "^4.17.10",
+    "request": "^2.85.0",
+    "yargs": "^11.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-bluebird": "^1.0.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "chai-string": "^1.4.0",
+    "chai-things": "^0.2.0",
+    "esdoc": "^1.0.4",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "mocha": "^5.1.1",
+    "nyc": "^11.7.1"
+  }
+}
