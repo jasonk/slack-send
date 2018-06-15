@@ -1,6 +1,6 @@
 {
   "name": "slack-send",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Send stuff to Slack from the command line",
   "main": "lib/index.js",
   "scripts": {
@@ -13,6 +13,9 @@
   "keywords": [],
   "author": "Jason Kohles <email@jasonkohles.com>",
   "license": "MIT",
+  "bin": {
+    "slack-send": "./bin/slack-send"
+  },
   "dependencies": {
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.10",
