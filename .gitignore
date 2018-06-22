@@ -61,7 +61,7 @@ typings/
 .next
 
 # babel transpiled code
-./lib
+lib
 
 # test suite output
 test-results
