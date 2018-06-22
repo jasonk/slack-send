@@ -1,6 +1,6 @@
 {
   "name": "slack-send",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Send stuff to Slack from the command line",
   "main": "lib/index.js",
   "scripts": {
