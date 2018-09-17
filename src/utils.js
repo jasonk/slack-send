@@ -29,7 +29,7 @@ export function gravatar_url( email ) {
 
 export function translate_color( color, mapfile ) {
   if ( ! color ) return;
-  if ( ! mapfile ) mapfile = path.resolve( __dirname, 'color-map.yaml' );
+  if ( ! mapfile ) mapfile = path.resolve( __dirname, '..', 'color-map.yaml' );
   const map = read_file( mapfile );
   return map[ color ] || color;
 }
