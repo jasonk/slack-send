@@ -4,7 +4,10 @@ import fs from 'fs';
 
 import {
   read_stdin, read_text, read_file, run_command, parse_text,
+  transform_opts,
 } from './utils';
+
+const debug = require( 'debug' )( 'slack-send:utils' );
 
 const handlers = {
   'stdin'       : read_stdin,
@@ -51,11 +54,24 @@ create( 'run_command', run_command, {
 } );
 
 export function expand( opt ) {
-  if ( _.isEmpty( opt ) ) return;
+  debug( `expanding`, opt );
+  if ( _.isEmpty( opt ) ) {
+    debug( `isEmpty, returning` );
+    return;
+  }
   const text = handle( opt );
+  debug( `got text`, text );
   if ( ! text ) return opt;
-  if ( _.isString( text ) ) return parse_text( text );
-  return text;
+  if ( ! _.isString( text ) ) return text;
+  const data = parse_text( text );
+  debug( `got data`, data );
+  if ( _.isArray( data ) ) {
+    return _.map( data, transform_opts );
+  } else if ( _.isPlainObject( data ) ) {
+    return transform_opts( data );
+  } else {
+    throw new Error( `Don't know how to parse data` );
+  }
 }
 
 function handle( opt ) {

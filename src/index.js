@@ -9,7 +9,7 @@ export { Message, Attachment, Attachers, Commands };
 
 const debug = require( 'debug' )( 'slack-send:main' );
 
-const opts = _.mapValues( _.assign( {},
+export const opts = _.mapValues( _.assign( {},
   Message.options,
   _.mapValues( Attachment.options, val => {
     return _.defaults( val, { group : 'Message Options' } );
@@ -28,7 +28,7 @@ const opts = _.mapValues( _.assign( {},
 export default function SlackSend( options, cb ) {
   debug( 'SlackSend', options, cb );
   if ( ! options || _.isString( options ) ) return Cli( options, cb );
-  const args = transform_opts( options, opts );
+  const args = transform_opts( options );
   debug( 'args', args );
   return new Message( args );
 }
@@ -42,7 +42,7 @@ export function cliBuild( cmdline ) {
     .completion( 'completion' );
 
   const argv = yargs.parse( cmdline || process.argv.slice( 2 ) );
-  const args = transform_opts( argv, opts );
+  const args = transform_opts( argv );
 
   if ( _.isEmpty( args ) ) usage( null, 1 );
 

@@ -22,16 +22,14 @@ export default class Message {
     this.attach( extract_opts( options, Attachment.options ) );
     debug( `attachers`, options.attachers );
     debug( 'options', options );
-    _.each( options.attachers, att => {
-      debug( 'Attaching this one', att );
-      this.attach( att );
-    } );
+    _.each( options.attachers, att => this.attach( att ) );
   }
 
   attach( ...args ) {
     _.each( args, opt => {
       debug( 'Attaching from', opt );
       opt = expand( opt );
+      debug( 'Attaching with', opt );
       if ( _.isEmpty( opt ) ) return;
       if ( _.isArray( opt ) ) return _.map( opt, o => this.attach( o ) );
       this.attachments.push( new Attachment( opt ) );

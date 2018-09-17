@@ -3,20 +3,21 @@ import YAML from 'js-yaml';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import { opts } from './';
 
 const debug = require( 'debug' )( 'slack-send:utils' );
 
 export function get_environment() {
-  const opts = {};
+  const env = {};
   _.each( process.env, ( val, key ) => {
     if ( ! /^SLACK_SEND_/i.test( key ) ) return;
     key = key.replace( /^SLACK_SEND_/i, '' ).toLowerCase();
-    opts[ key ] = val;
+    env[ key ] = val;
   } );
-  if ( process.env.SLACK_TOKEN && ! opts.token ) {
-    opts.token = process.env.SLACK_TOKEN;
+  if ( process.env.SLACK_TOKEN && ! env.token ) {
+    env.token = process.env.SLACK_TOKEN;
   }
-  return opts;
+  return env;
 }
 
 export function gravatar_url( email ) {
@@ -97,7 +98,8 @@ export function extract_opts( data, opts ) {
 /**
  * Transform options into canonical formats (and names).
  */
-export function transform_opts( data, opts ) {
+export function transform_opts( data ) {
+  debug( 'transform_opts', data );
   const env = get_environment();
   const attachers = _.compact( _.uniq( _.flattenDeep( _.map( [
     '_', 'attacher', 'attachers', 'attachment', 'attachments', 'attach',
@@ -109,11 +111,11 @@ export function transform_opts( data, opts ) {
   data = _.mapValues( opts, ( conf, opt ) => {
     if ( ! _.isNil( data[ opt ] ) ) return data[ opt ];
     for ( const alias of conf.alias ) {
-      if ( _.has( data, alias ) ) return data[ alias ];
+      if ( ! _.isNil( data[ alias ] ) ) return data[ alias ];
     }
     if ( ! _.isNil( env[ opt ] ) ) return env[ opt ];
     for ( const alias of conf.alias ) {
-      if ( _.has( env, alias ) ) return env[ alias ];
+      if ( ! _.isNil( env[ alias ] ) ) return env[ alias ];
     }
     return conf.default;
   } );

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-
 import { Attachers, Options } from './';
 import { gravatar_url, translate_color, extract_opts } from './utils';
 
@@ -48,21 +47,24 @@ const transforms = {
 
 export default class Attachment {
 
-  constructor( options ) {
+  constructor( options={} ) {
     const {
-      action, short_field, long_field, ...opts
+      action, short_field, long_field, field,
+      ...opts
     } = extract_opts( options, Attachment.options );
-    debug( 'attachment options', options );
+    debug( 'attachment options', options, { action, short_field, long_field, field } );
     _.assign( this, opts );
     this.fields = [];
     this.actions = [];
     this.long_field( long_field );
     this.short_field( short_field );
+    this.field( field );
     this.action( action );
+    debug( 'CONSTRUCTED', this );
   }
 
   getPayload() {
-    // field short_field
+    debug( 'ATTACHMENT PAYLOAD', this );
     const props = _.pick( this, [
       'color', 'pretext', 'fallback', 'text', 'ts',
       'author_name', 'author_link', 'author_icon',
@@ -88,6 +90,7 @@ export default class Attachment {
   }
 
   field( name, value, short=false ) {
+    debug( `Adding field`, name, value, short );
     if ( _.isNil( name ) ) return;
     if ( _.isArray( name ) ) {
       return _.map( name, f => this.field( f, null, short ) );
@@ -133,7 +136,7 @@ export default class Attachment {
   }
 }
 
-Attachment.options = {
+Attachment.options = _.mapValues( {
   long_field  : {
     type      : 'string',
     array     : true,
@@ -146,6 +149,13 @@ Attachment.options = {
     array     : true,
     describe  : 'Add a short field to the message',
     alias     : [ 'short_fields' ],
+    hidden    : true,
+  },
+  field     : {
+    type      : 'string',
+    array     : true,
+    describe  : 'Add a field to the message',
+    alias     : [ 'fields' ],
     hidden    : true,
   },
   action    : {
@@ -232,4 +242,6 @@ Attachment.options = {
     group     : 'Advanced Options',
     hidden    : true,
   },
-};
+}, ( conf, name ) => {
+  return _.defaults( conf, { group : 'Message Options' } );
+} );
