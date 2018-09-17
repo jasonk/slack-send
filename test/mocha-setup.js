@@ -31,17 +31,15 @@ function payload( opts={} ) {
 function cksend( opts, msg_cb ) {
   const origin = require( '../src' );
   const token = process.env.SLACK_SEND_TEST_TOKEN;
+  process.env.SLACK_SEND_TOKEN = token;
   const msg = _.isString( opts )
-    ? origin.Cli( opts, msg_cb )
+    ? origin.cliBuild( opts, msg_cb )
     : origin.default( _.defaults( opts, { token } ) );
   msg.send( ( err, res, body ) => {
-    console.log( 'HERE 1' );
     if ( err ) throw err;
-    console.log( 'HERE 2' );
     if ( ! body || ! body.ok || ! body.ts ) {
       throw new Error( JSON.stringify( body ) );
     }
-    console.log( 'HERE 3' );
     const ts = body.ts;
     const channel = body.channel;
     request( {

@@ -1,10 +1,7 @@
-import { Cli } from '../src';
 import { spawnSync } from 'child_process';
 
 function cli( ...params ) {
-  const res = spawnSync( 'debug-slack-send', params, {
-    encoding      : 'utf8',
-  } );
+  const res = spawnSync( 'debug-slack-send', params, { encoding : 'utf8' } );
   delete res.output;
   return res;
 }
@@ -39,6 +36,5 @@ describe( 'Cli', () => {
     res.should.have.property( 'stdout' );
     res.stdout.should.match( /^[\d\.]+\n$/ );
   } ).slow( 6000 );
-
 
 } );

@@ -20,11 +20,17 @@ export default class Message {
     _.assign( this, extract_opts( options, Message.options ) );
     this.attachments = [];
     this.attach( extract_opts( options, Attachment.options ) );
-    _.each( options.attachers, att => this.attach( att ) );
+    debug( `attachers`, options.attachers );
+    debug( 'options', options );
+    _.each( options.attachers, att => {
+      debug( 'Attaching this one', att );
+      this.attach( att );
+    } );
   }
 
   attach( ...args ) {
     _.each( args, opt => {
+      debug( 'Attaching from', opt );
       opt = expand( opt );
       if ( _.isEmpty( opt ) ) return;
       if ( _.isArray( opt ) ) return _.map( opt, o => this.attach( o ) );
@@ -52,6 +58,9 @@ export default class Message {
     if ( ! _.isFunction( cb ) ) {
       throw new Error( `Argument to send is not a function` );
     }
+    if ( ! this.token ) {
+      throw new Error( `No SLACK_SEND_TOKEN or SLACK_TOKEN!` );
+    }
     request( {
       uri       : 'https://slack.com/api/chat.postMessage',
       method    : 'POST',
@@ -70,12 +79,28 @@ export default class Message {
       'reply_broadcast', 'thread_ts', 'pin_message',
     ] );
     props.attachments = _.map( this.attachments, a => a.getPayload() );
-    const payload = _.mapValues( props, ( val, key ) => {
+    const payload = _.omitBy( _.mapValues( props, ( val, key ) => {
       const xfrm = transforms[ key ];
       if ( ! xfrm ) return val;
       return xfrm.call( this, val );
-    } );
-    return _.omitBy( payload, _.isNil );
+    } ), _.isNil );
+    if ( ! payload.text ) {
+      const is_only_text = att => {
+        const fkeys = _.keys( att );
+        return fkeys.length === 1 && att.text;
+      };
+      const textonly = _.find( payload.attachments, is_only_text );
+      if ( textonly ) {
+        payload.text = textonly.text;
+        _.remove( payload.attachments, is_only_text );
+      } else {
+        const hastext = _.find( payload.attachments, att => att.text );
+        if ( hastext ) {
+          payload.text = hastext.text;
+        }
+      }
+    }
+    return payload;
   }
 
 }
@@ -97,8 +122,8 @@ Message.options = {
   },
   thread_ts       : {
     type      : 'string',
-    describe  : 'Thread to reply to',
     alias     : [ 'thread' ],
+    describe  : 'Thread to reply to',
     group     : 'Delivery Options',
   },
   pin_message       : {
@@ -179,5 +204,6 @@ Message.options = {
     describe  : 'Slack Authentication Token',
     group     : 'Configuration Options',
     defaultDescription  : '$SLACK_SEND_TOKEN or $SLACK_TOKEN',
+    default   : process.env.SLACK_SEND_TOKEN || process.env.SLACK_TOKEN,
   },
 };

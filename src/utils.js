@@ -91,21 +91,14 @@ export function usage( error, code=0 ) {
 }
 
 export function extract_opts( data, opts ) {
-  const env = get_environment();
-  const res = _.mapValues( opts, ( conf, name ) => {
-    const names = _.compact( _.flatten( [ name, conf.alias ] ) );
-    const vals = _.flattenDeep( _.compact( _.at( data, names ) ) );
-    if ( vals.length === 1 ) return vals[0];
-    if ( vals.length > 1 ) return vals;
-    for ( const n of names ) {
-      if ( env[ n ] ) return env[ n ];
-    }
-    return conf.default;
-  } );
-  return _.omitBy( res, _.isNil );
+  return _.omitBy( _.pick( data, _.keys( opts ) ), _.isNil );
 }
 
+/**
+ * Transform options into canonical formats (and names).
+ */
 export function transform_opts( data, opts ) {
+  const env = get_environment();
   const attachers = _.compact( _.uniq( _.flattenDeep( _.map( [
     '_', 'attacher', 'attachers', 'attachment', 'attachments', 'attach',
   ], n => {
@@ -113,9 +106,17 @@ export function transform_opts( data, opts ) {
     delete data[ n ];
     return x;
   } ) ) ) );
-  data = _.omitBy( data, _.isNil );
-  data = _.mapKeys( data, ( val, key ) => _.snakeCase( key ) );
-  data = _.pick( data, _.keys( opts ) );
+  data = _.mapValues( opts, ( conf, opt ) => {
+    if ( ! _.isNil( data[ opt ] ) ) return data[ opt ];
+    for ( const alias of conf.alias ) {
+      if ( _.has( data, alias ) ) return data[ alias ];
+    }
+    if ( ! _.isNil( env[ opt ] ) ) return env[ opt ];
+    for ( const alias of conf.alias ) {
+      if ( _.has( env, alias ) ) return env[ alias ];
+    }
+    return conf.default;
+  } );
   data = _.omitBy( data, _.isNil );
   data = _.omitBy( data, ( val, key ) => {
     const opt = opts[ key ];

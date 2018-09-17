@@ -9,23 +9,32 @@ export { Message, Attachment, Attachers, Commands };
 
 const debug = require( 'debug' )( 'slack-send:main' );
 
-const opts = _.assign( {},
+const opts = _.mapValues( _.assign( {},
   Message.options,
   _.mapValues( Attachment.options, val => {
     return _.defaults( val, { group : 'Message Options' } );
   } ),
   Attachers.options,
   Commands.options,
-);
+), ( conf, name ) => {
+  if ( ! conf.alias ) conf.alias = [];
+  const names = _.uniq( _.compact( _.flattenDeep( [
+    name, _.kebabCase( name ), conf.alias,
+  ] ) ) );
+  conf.alias = _.without( names, name );
+  return conf;
+} );
 
 export default function SlackSend( options, cb ) {
   debug( 'SlackSend', options, cb );
   if ( ! options || _.isString( options ) ) return Cli( options, cb );
-  return new Message( transform_opts( options, opts ) );
+  const args = transform_opts( options, opts );
+  debug( 'args', args );
+  return new Message( args );
 }
 
-export function Cli( cmdline, cb ) {
-  debug( 'Cli', cmdline, cb );
+export function cliBuild( cmdline ) {
+  debug( 'Cli', cmdline );
   const yargs = require( 'yargs' )
     .help()
     .options( opts )
@@ -37,10 +46,25 @@ export function Cli( cmdline, cb ) {
 
   if ( _.isEmpty( args ) ) usage( null, 1 );
 
+  debug( 'args', args );
+
   if ( Commands.handle( args, yargs ) ) return;
   try {
-    ( new Message( args ) ).send( cb );
+    return new Message( args );
   } catch( err ) {
     usage( err, 1 );
   }
+}
+
+export function cliSend( cmdline ) {
+  const msg = cliBuild( cmdline );
+  if ( ! msg ) return;
+  msg.send( ( err, res, body ) => {
+    if ( err ) throw err;
+    if ( body.ok ) {
+      console.log( body.ts );
+    } else {
+      console.error( body );
+    }
+  } );
 }

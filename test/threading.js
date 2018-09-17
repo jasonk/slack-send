@@ -4,7 +4,7 @@ describe( 'threading', () => {
     return top_prop( 'thread_ts', '1234567890.12345', '1234567890.12345' );
   } );
 
-  xit( 'should handle thread as an alias for thread_ts', () => {
+  it( 'should handle thread as an alias for thread_ts', () => {
     return top_prop(
       'thread', '1234567890.12345',
       'thread_ts', '1234567890.12345'
@@ -22,7 +22,7 @@ describe( 'threading', () => {
     fn.should.throw;
   } );
 
-  xit( 'should allow broadcast as an alias for reply_broadcast', () => {
+  it( 'should allow broadcast as an alias for reply_broadcast', () => {
     return top_prop( 'broadcast', true, 'reply_broadcast', true );
   } );
 

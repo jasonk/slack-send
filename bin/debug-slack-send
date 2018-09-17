@@ -4,4 +4,4 @@ if ( process.env.SLACK_SEND_TEST_TOKEN && ! process.env.SLACK_SEND_TOKEN ) {
   process.env.SLACK_SEND_TOKEN = process.env.SLACK_SEND_TEST_TOKEN;
 }
 require( 'babel-register' );
-require( '../src' ).default();
+require( '../src' ).cliSend();

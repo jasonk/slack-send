@@ -52,6 +52,7 @@ export default class Attachment {
     const {
       action, short_field, long_field, ...opts
     } = extract_opts( options, Attachment.options );
+    debug( 'attachment options', options );
     _.assign( this, opts );
     this.fields = [];
     this.actions = [];
