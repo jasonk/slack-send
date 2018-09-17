@@ -1,5 +1,12 @@
-./bin
-./examples
-./src
-./test
-./test-results
+/examples
+/src
+/test
+/test-results
+/.nyc_output
+/.babelrc
+.env
+.envrc
+.nycrc
+/*.tgz
+/test-script
+/bin/debug-slack-send
