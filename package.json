@@ -8,7 +8,9 @@
     "docs": "esdoc",
     "build": "babel --out-dir lib src --source-maps",
     "watch": "babel --out-dir lib src --source-maps --watch",
-    "eslint": "eslint ."
+    "eslint": "eslint .",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [],
   "author": "Jason Kohles <email@jasonkohles.com>",
@@ -21,7 +23,8 @@
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.10",
     "request": "^2.85.0",
-    "yargs": "^11.1.0"
+    "yargs": "^11.1.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -40,5 +43,6 @@
     "esdoc-standard-plugin": "^1.0.0",
     "mocha": "^5.1.1",
     "nyc": "^11.7.1"
-  }
+  },
+  "snyk": true
 }
